@@ -86,7 +86,7 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
-                    return "\uEEEE\uEEEE\uEEEE\uEEEE" + 
+                    return " " + 
                            TIER_EMOJI.getOrDefault(tier.tier, "") + 
                            KIT_EMOJI.getOrDefault(tier.category, "");
                 }
@@ -107,7 +107,7 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
-            return "\uEEEE\uEEEE\uEEEE\uEEEE" + 
+            return " " + 
                    TIER_EMOJI.getOrDefault(bestTier.tier, "") + 
                    KIT_EMOJI.getOrDefault(bestTier.category, "");
         }

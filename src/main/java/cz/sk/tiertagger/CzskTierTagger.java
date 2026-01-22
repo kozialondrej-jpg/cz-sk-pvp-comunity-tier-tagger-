@@ -16,36 +16,57 @@ public class CzskTierTagger implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Inicializuji CZSK Tier Tagger...");
         
-        // Načti konfiguraci
-        ConfigManager.load();
-        
-        // Registruj keybindy
-        Keybinds.registerKeybinds();
-        
-        // Registruj příkazy
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            CommandManager.registerCommands(dispatcher);
-        });
-        
-        // Načti data při startu (na pozadí)
-        new Thread(() -> {
-            DataFetcher.refreshCache();
-        }).start();
-        
-        // Hook do načítání entit - přidej tier suffix k hráčům
-        ClientEntityEvents.ENTITY_LOAD.register((entity, clientWorld) -> {
-            if (entity instanceof PlayerEntity) {
-                if (((TierModifier) entity).getSuffix() == null) {
-                    new Thread(() -> {
-                        PlayerInfo info = DataFetcher.getPlayerInfo(entity.getName().getString());
-                        if (info != null) {
-                            ((TierModifier) entity).setSuffix(ShowedTier.showedTier(info));
-                        }
-                    }).start();
+        try {
+            // Načti konfiguraci
+            ConfigManager.load();
+            
+            // Registruj keybindy
+            Keybinds.registerKeybinds();
+            
+            // Registruj příkazy
+            ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+                CommandManager.registerCommands(dispatcher);
+            });
+            
+            // Načti data při startu (na pozadí)
+            Thread dataThread = new Thread(() -> {
+                try {
+                    DataFetcher.refreshCache();
+                    LOGGER.info("CZSK Tier data úspěšně načtena");
+                } catch (Exception e) {
+                    LOGGER.error("Chyba při načítání CZSK Tier dat", e);
                 }
-            }
-        });
+            });
+            dataThread.setName("CZSK-TierData-Loader");
+            dataThread.setDaemon(true);
+            dataThread.start();
+            
+            // Hook do načítání entit - přidej tier suffix k hráčům
+            ClientEntityEvents.ENTITY_LOAD.register((entity, clientWorld) -> {
+                if (entity instanceof PlayerEntity) {
+                    PlayerEntity player = (PlayerEntity) entity;
+                    TierModifier modifier = (TierModifier) player;
+                    
+                    if (modifier.getSuffix() == null) {
+                        try {
+                            String playerName = player.getName().getString();
+                            // Zkus načíst data synchronně
+                            PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
+                            if (info != null) {
+                                String suffix = ShowedTier.showedTier(info);
+                                modifier.setSuffix(suffix);
+                                LOGGER.debug("Přidán tier pro hráče: " + playerName);
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error("Chyba při přidání tiera hráči", e);
+                        }
+                    }
+                }
+            });
 
-        LOGGER.info("CZSK Tier Tagger úspěšně inicializován!");
+            LOGGER.info("CZSK Tier Tagger úspěšně inicializován!");
+        } catch (Exception e) {
+            LOGGER.error("Kritická chyba při inicializaci CZSK Tier Tagger", e);
+        }
     }
 }

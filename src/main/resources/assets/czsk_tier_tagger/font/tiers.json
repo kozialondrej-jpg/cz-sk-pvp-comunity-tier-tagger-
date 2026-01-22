@@ -2,7 +2,7 @@
 	"providers": [
 		{
 			"type": "bitmap",
-			"file": "czsk_tier_tagger:font/tiers.png",
+			"file": "czsk_tier_tagger:textures/font/tiers.png",
 			"ascent": 8,
 			"height": 8,
 			"chars": [

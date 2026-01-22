@@ -34,92 +34,144 @@ public class DataFetcher {
     
     private static void fetchAllData() {
         try {
+            CzskTierTagger.LOGGER.info("[DataFetcher] Zahajuji stahování CZSK Tier dat...");
+            
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(CSV_URL))
                 .GET()
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                 .build();
             
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             
+            CzskTierTagger.LOGGER.debug("[DataFetcher] HTTP Status: " + response.statusCode());
+            
             if (response.statusCode() == 200) {
-                parseCSVData(response.body());
+                String body = response.body();
+                if (body == null || body.isEmpty()) {
+                    CzskTierTagger.LOGGER.error("[DataFetcher] Response body je prázdný!");
+                    return;
+                }
+                
+                CzskTierTagger.LOGGER.debug("[DataFetcher] Staženo " + body.length() + " bytů");
+                parseCSVData(body);
                 lastFetchTime = System.currentTimeMillis();
+            } else {
+                CzskTierTagger.LOGGER.error("[DataFetcher] Chyba: HTTP " + response.statusCode());
+                CzskTierTagger.LOGGER.error("[DataFetcher] Response: " + response.body().substring(0, Math.min(200, response.body().length())));
             }
         } catch (Exception e) {
-            System.err.println("Chyba při stahování CZSK Tier dat: " + e.getMessage());
-            e.printStackTrace();
+            CzskTierTagger.LOGGER.error("[DataFetcher] Kritická chyba při stahování: " + e.getMessage(), e);
         }
     }
     
     private static void parseCSVData(String csvData) {
         try {
             String[] lines = csvData.split("\n");
-            if (lines.length < 2) return;
+            if (lines.length < 2) {
+                CzskTierTagger.LOGGER.error("[CSV Parser] Chyba: CSV má méně než 2 řádky");
+                return;
+            }
             
             // Parsuj hlavičku
             String[] headers = parseCSVLine(lines[0]);
             Map<String, Integer> columnIndices = new HashMap<>();
+            
+            CzskTierTagger.LOGGER.debug("[CSV Parser] Nalezena sloupce: " + Arrays.toString(headers));
+            
             for (int i = 0; i < headers.length; i++) {
-                columnIndices.put(headers[i].trim(), i);
+                String headerName = headers[i].trim();
+                columnIndices.put(headerName, i);
+            }
+            
+            // Ověř, že existují důležité sloupce
+            if (!columnIndices.containsKey("Nick")) {
+                CzskTierTagger.LOGGER.error("[CSV Parser] Sloupec 'Nick' nenalezen!");
+                CzskTierTagger.LOGGER.error("[CSV Parser] Dostupné sloupce: " + columnIndices.keySet());
+                return;
             }
             
             cachedData.clear();
+            int loadedPlayers = 0;
+            int skippedPlayers = 0;
             
             // Projdi všechny řádky
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i].trim();
-                if (line.isEmpty()) continue;
+                if (line.isEmpty()) {
+                    skippedPlayers++;
+                    continue;
+                }
                 
                 String[] values = parseCSVLine(line);
                 
-                PlayerInfo player = new PlayerInfo();
-                
-                // Načti UUID a Nick
-                Integer uuidIndex = columnIndices.get("UUID");
-                Integer nickIndex = columnIndices.get("Nick");
-                
-                if (uuidIndex != null && uuidIndex < values.length) {
-                    player.uuid = values[uuidIndex].trim();
-                }
-                if (nickIndex != null && nickIndex < values.length) {
-                    player.nick = values[nickIndex].trim();
+                if (values.length < 2) {
+                    skippedPlayers++;
+                    continue;
                 }
                 
-                if (player.nick == null || player.nick.isEmpty()) continue;
-                
-                // Načti tiery pro všechny kity
-                List<Tier> tiers = new ArrayList<>();
-                int totalScore = 0;
-                
-                for (String kitName : KIT_NAMES) {
-                    Integer colIndex = columnIndices.get(kitName);
+                try {
+                    PlayerInfo player = new PlayerInfo();
                     
-                    if (colIndex != null && colIndex < values.length) {
-                        String tierValue = values[colIndex].trim();
-                        if (!tierValue.isEmpty() && !tierValue.equals("-")) {
-                            Tier tier = new Tier();
-                            tier.category = kitName.equals("Npot") ? "NPot" : kitName;
-                            tier.tier = tierValue;
-                            tiers.add(tier);
-                            
-                            try {
-                                totalScore += Integer.parseInt(tierValue);
-                            } catch (NumberFormatException ignored) {}
+                    // Načti UUID a Nick
+                    Integer uuidIndex = columnIndices.get("UUID");
+                    Integer nickIndex = columnIndices.get("Nick");
+                    
+                    if (uuidIndex != null && uuidIndex < values.length) {
+                        player.uuid = values[uuidIndex].trim();
+                    }
+                    if (nickIndex != null && nickIndex < values.length) {
+                        player.nick = values[nickIndex].trim();
+                    }
+                    
+                    // Validuj, že máme alespoň nick
+                    if (player.nick == null || player.nick.isEmpty()) {
+                        skippedPlayers++;
+                        continue;
+                    }
+                    
+                    // Načti tiery pro všechny kity
+                    List<Tier> tiers = new ArrayList<>();
+                    int totalScore = 0;
+                    
+                    for (String kitName : KIT_NAMES) {
+                        Integer colIndex = columnIndices.get(kitName);
+                        
+                        if (colIndex != null && colIndex < values.length) {
+                            String tierValue = values[colIndex].trim();
+                            if (!tierValue.isEmpty() && !tierValue.equals("-")) {
+                                try {
+                                    Tier tier = new Tier();
+                                    tier.category = kitName.equals("Npot") ? "NPot" : kitName;
+                                    tier.tier = tierValue;
+                                    tiers.add(tier);
+                                    
+                                    totalScore += Integer.parseInt(tierValue);
+                                } catch (NumberFormatException e) {
+                                    CzskTierTagger.LOGGER.debug("Chyba pri parsovani tier hodnoty: " + tierValue);
+                                }
+                            }
                         }
                     }
+                    
+                    player.tiers = tiers;
+                    player.score = totalScore;
+                    
+                    cachedData.put(player.nick.toLowerCase(), player);
+                    loadedPlayers++;
+                } catch (Exception e) {
+                    CzskTierTagger.LOGGER.warn("Chyba pri zpracovani radku " + i + ": " + e.getMessage());
+                    skippedPlayers++;
                 }
-                
-                player.tiers = tiers;
-                player.score = totalScore;
-                
-                cachedData.put(player.nick.toLowerCase(), player);
             }
             
-            System.out.println("[CZSK Tier Tagger] Načteno " + cachedData.size() + " hráčů z CZSK Tierlist");
+            CzskTierTagger.LOGGER.info("[CSV Parser] Úspěšně načteno " + loadedPlayers + " hráčů");
+            if (skippedPlayers > 0) {
+                CzskTierTagger.LOGGER.debug("[CSV Parser] Přeskočeno " + skippedPlayers + " řádků");
+            }
             
         } catch (Exception e) {
-            System.err.println("Chyba při parsování CSV dat: " + e.getMessage());
-            e.printStackTrace();
+            CzskTierTagger.LOGGER.error("Chyba při parsování CSV dat: " + e.getMessage(), e);
         }
     }
     

@@ -33,9 +33,9 @@ public class MixinPlayerEntity implements TierModifier {
         if (suffix != null && !suffix.isEmpty()) {
             Text original = cir.getReturnValue();
             Text newText = original.copy()
-                .append(Text.literal(suffix)
-                    .styled(s -> s.withColor(Formatting.WHITE))
-                    .styled(s -> s.withFont(Identifier.of("czsk_tier_tagger", "tiers"))));
+                .append(Text.literal(" " + suffix)
+                    .styled(s -> s.withColor(Formatting.LIGHT_PURPLE)
+                        .withFont(Identifier.of("czsk_tier_tagger", "tiers"))));
             cir.setReturnValue(newText);
         }
     }
