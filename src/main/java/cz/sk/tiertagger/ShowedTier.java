@@ -42,16 +42,16 @@ public class ShowedTier {
         Map.entry("54", "RHT1")
     );
     
-    private static final Map<String, String> KIT_EMOJI = Map.ofEntries(
-        Map.entry("Mace", "⚔Mace"),
-        Map.entry("SMP", "⚔SMP"),
-        Map.entry("UHC", "⚔UHC"),
-        Map.entry("Pot", "⚔Pot"),
-        Map.entry("Crystal", "⚔Crystal"),
-        Map.entry("Sword", "⚔Sword"),
-        Map.entry("DiaSMP", "⚔DiaSMP"),
-        Map.entry("NPot", "⚔NPot"),
-        Map.entry("Axe", "⚔Axe")
+    private static final Map<String, String> KIT_DISPLAY_NAMES = Map.ofEntries(
+        Map.entry("Mace", "Mace"),
+        Map.entry("SMP", "SMP"),
+        Map.entry("UHC", "UHC"),
+        Map.entry("Pot", "Pot"),
+        Map.entry("Crystal", "CPVP"),
+        Map.entry("Sword", "Sword"),
+        Map.entry("DiaSMP", "DiaSMP"),
+        Map.entry("NPot", "NPot"),
+        Map.entry("Axe", "Axe")
     );
     
     private static final Map<String, String> TIER_NAMES = Map.ofEntries(
@@ -86,9 +86,10 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
+                    String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
                     return "[" + 
                            TIER_EMOJI.getOrDefault(tier.tier, "?") + 
-                           "]";
+                           " " + kitName + "]";
                 }
             }
             return "";
@@ -107,9 +108,10 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
+            String kitName = KIT_DISPLAY_NAMES.getOrDefault(bestTier.category, bestTier.category);
             return "[" + 
                    TIER_EMOJI.getOrDefault(bestTier.tier, "?") + 
-                   " " + bestTier.category + "]";
+                   " " + kitName + "]";
         }
         
         return "";
@@ -123,7 +125,6 @@ public class ShowedTier {
         StringBuilder msg = new StringBuilder();
         msg.append("=== CZSK TIERLIST ===\n");
         msg.append("HRÁČ: ").append(info.nick).append("\n");
-        msg.append("CELKOVÉ SKÓRE: ").append(info.score).append(" bodů\n");
         msg.append("TIERY:");
         
         if (info.tiers != null && !info.tiers.isEmpty()) {
@@ -137,13 +138,11 @@ public class ShowedTier {
             
             for (Tier tier : sortedTiers) {
                 String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
+                String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
                 msg.append("\n  > ")
-                   .append(tier.category)
+                   .append(kitName)
                    .append(": ")
-                   .append(tierName)
-                   .append(" (")
-                   .append(tier.tier)
-                   .append(" bodů)");
+                   .append(tierName);
             }
         } else {
             return "HRÁČ NEHODNOCEN";
