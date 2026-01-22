@@ -1,0 +1,15 @@
+{
+	"providers": [
+		{
+			"type": "bitmap",
+			"file": "czsk_tier_tagger:font/tiers.png",
+			"ascent": 8,
+			"height": 8,
+			"chars": [
+				"\uEE00\uEE01\uEE02\uEE03\uEE04\uEE05\uEE06\uEE07\uEE08\uEE09\uEE0a\uEE0b\uEE0c\uEE0d\uEEEE",
+				"\uEF00\uEF01\uEF02\uEF03\uEF04\uEF05\uEF06\uEF07\uEF08",
+				"\ued09"
+			]
+		}
+	]
+}
