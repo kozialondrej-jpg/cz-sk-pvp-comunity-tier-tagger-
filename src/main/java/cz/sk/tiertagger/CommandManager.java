@@ -9,7 +9,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,8 +32,7 @@ public class CommandManager {
                         if (client.player != null) {
                             if (info != null) {
                                 Text text = Text.literal(ShowedTier.showedMessage(info))
-                                    .styled(s -> s.withColor(Formatting.WHITE)
-                                    .withFont(Identifier.of("czsk_tier_tagger", "tiers")));
+                                    .styled(s -> s.withColor(Formatting.GOLD));
                                 client.player.sendMessage(text, false);
                             } else {
                                 client.player.sendMessage(

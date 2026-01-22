@@ -26,32 +26,32 @@ public class ShowedTier {
     
     private static final Map<String, String> TIER_EMOJI = Map.ofEntries(
         Map.entry("-", ""),
-        Map.entry("1", "\uEE00"),   // LT5
-        Map.entry("2", "\uEE01"),   // HT5
-        Map.entry("3", "\uEE02"),   // LT4
-        Map.entry("5", "\uEE03"),   // HT4
-        Map.entry("10", "\uEE04"),  // LT3
-        Map.entry("16", "\uEE05"),  // HT3
-        Map.entry("24", "\uEE06"),  // LT2
-        Map.entry("32", "\uEE07"),  // HT2
-        Map.entry("48", "\uEE08"),  // LT1
-        Map.entry("60", "\uEE09"),  // HT1
-        Map.entry("22", "\uEE0a"),  // RLT2
-        Map.entry("29", "\uEE0b"),  // RHT2
-        Map.entry("43", "\uEE0c"),  // RLT1
-        Map.entry("54", "\uEE0d")   // RHT1
+        Map.entry("1", "LT5"),
+        Map.entry("2", "HT5"),
+        Map.entry("3", "LT4"),
+        Map.entry("5", "HT4"),
+        Map.entry("10", "LT3"),
+        Map.entry("16", "HT3"),
+        Map.entry("24", "LT2"),
+        Map.entry("32", "HT2"),
+        Map.entry("48", "LT1"),
+        Map.entry("60", "HT1"),
+        Map.entry("22", "RLT2"),
+        Map.entry("29", "RHT2"),
+        Map.entry("43", "RLT1"),
+        Map.entry("54", "RHT1")
     );
     
     private static final Map<String, String> KIT_EMOJI = Map.ofEntries(
-        Map.entry("Mace", "\uEF00"),
-        Map.entry("SMP", "\uEF01"),
-        Map.entry("UHC", "\uEF02"),
-        Map.entry("Pot", "\uEF03"),
-        Map.entry("Crystal", "\uEF04"),
-        Map.entry("Sword", "\uEF05"),
-        Map.entry("DiaSMP", "\uEF06"),
-        Map.entry("NPot", "\uEF07"),
-        Map.entry("Axe", "\uEF08")
+        Map.entry("Mace", "⚔Mace"),
+        Map.entry("SMP", "⚔SMP"),
+        Map.entry("UHC", "⚔UHC"),
+        Map.entry("Pot", "⚔Pot"),
+        Map.entry("Crystal", "⚔Crystal"),
+        Map.entry("Sword", "⚔Sword"),
+        Map.entry("DiaSMP", "⚔DiaSMP"),
+        Map.entry("NPot", "⚔NPot"),
+        Map.entry("Axe", "⚔Axe")
     );
     
     private static final Map<String, String> TIER_NAMES = Map.ofEntries(
@@ -86,9 +86,9 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
-                    return " " + 
-                           TIER_EMOJI.getOrDefault(tier.tier, "") + 
-                           KIT_EMOJI.getOrDefault(tier.category, "");
+                    return "[" + 
+                           TIER_EMOJI.getOrDefault(tier.tier, "?") + 
+                           "]";
                 }
             }
             return "";
@@ -107,9 +107,9 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
-            return " " + 
-                   TIER_EMOJI.getOrDefault(bestTier.tier, "") + 
-                   KIT_EMOJI.getOrDefault(bestTier.category, "");
+            return "[" + 
+                   TIER_EMOJI.getOrDefault(bestTier.tier, "?") + 
+                   " " + bestTier.category + "]";
         }
         
         return "";
@@ -121,7 +121,7 @@ public class ShowedTier {
         }
         
         StringBuilder msg = new StringBuilder();
-        msg.append("\ued09 CZSK TIERLIST \ued09\n");
+        msg.append("=== CZSK TIERLIST ===\n");
         msg.append("HRÁČ: ").append(info.nick).append("\n");
         msg.append("CELKOVÉ SKÓRE: ").append(info.score).append(" bodů\n");
         msg.append("TIERY:");
@@ -137,13 +137,9 @@ public class ShowedTier {
             
             for (Tier tier : sortedTiers) {
                 String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
-                msg.append("\n      ")
-                   .append(TIER_EMOJI.getOrDefault(tier.tier, ""))
-                   .append(" ")
-                   .append(KIT_EMOJI.getOrDefault(tier.category, ""))
-                   .append(" ")
+                msg.append("\n  > ")
                    .append(tier.category)
-                   .append(" - ")
+                   .append(": ")
                    .append(tierName)
                    .append(" (")
                    .append(tier.tier)

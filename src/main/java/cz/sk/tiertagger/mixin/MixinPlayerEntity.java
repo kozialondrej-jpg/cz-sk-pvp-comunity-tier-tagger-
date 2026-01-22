@@ -4,7 +4,6 @@ import cz.sk.tiertagger.TierModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,8 +33,7 @@ public class MixinPlayerEntity implements TierModifier {
             Text original = cir.getReturnValue();
             Text newText = original.copy()
                 .append(Text.literal(" " + suffix)
-                    .styled(s -> s.withColor(Formatting.LIGHT_PURPLE)
-                        .withFont(Identifier.of("czsk_tier_tagger", "tiers"))));
+                    .styled(s -> s.withColor(Formatting.GOLD)));
             cir.setReturnValue(newText);
         }
     }
