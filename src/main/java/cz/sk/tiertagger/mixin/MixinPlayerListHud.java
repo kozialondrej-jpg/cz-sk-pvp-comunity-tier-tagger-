@@ -1,5 +1,6 @@
 package cz.sk.tiertagger.mixin;
 
+import cz.sk.tiertagger.CzskTierTagger;
 import cz.sk.tiertagger.DataFetcher;
 import cz.sk.tiertagger.ShowedTier;
 import cz.sk.tiertagger.tiers.PlayerInfo;
@@ -30,6 +31,7 @@ public class MixinPlayerListHud {
             PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
             if (info != null) {
                 String suffix = ShowedTier.showedTier(info);
+                CzskTierTagger.LOGGER.debug("[TabList] Hráč: {} má suffix: {}", playerName, suffix);
                 if (suffix != null && !suffix.isEmpty()) {
                     Text original = cir.getReturnValue();
                     Text newText = original.copy()
@@ -39,7 +41,7 @@ public class MixinPlayerListHud {
                 }
             }
         } catch (Exception e) {
-            // Ignoruj chyby, abychom nezpůsobili crash
+            CzskTierTagger.LOGGER.error("[TabList] Chyba pro hráče {}: {}", playerName, e.getMessage());
         }
     }
 }
