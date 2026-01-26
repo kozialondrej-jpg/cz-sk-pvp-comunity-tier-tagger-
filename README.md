@@ -8,7 +8,7 @@ Minecraft Fabric mod pro zobrazování CZSK PvP tierů u hráčů na serveru.
 - **Podpora více gamemodů** - Crystal, Sword, UHC, Pot, NPot, SMP, Axe, DiaSMP, Mace
 - **Přepínání gamemodů** - Klávesová zkratka pro změnu zobrazovaného gamemodu
 - **Příkazy** - `/czsktiers <jméno>` pro zobrazení detailů hráče
-- **Automatická aktualizace** - Data se načítají z [CZSK Tierlist](https://b0tfleyz.github.io/CZSKtiers/)
+- **Automatická aktualizace** - Data se načítají z [CZSK Tierlist](https://b0tfleyz.github.io/CZSKtiers/overall)
 
 ---
 
@@ -146,7 +146,7 @@ Konfigurační soubor: `.minecraft/config/czsk_tier_tagger.json`
 
 ## 🔗 Odkazy
 
-- 🌐 [CZSK Tierlist Web](https://b0tfleyz.github.io/CZSKtiers/)
+- 🌐 [CZSK Tierlist Web](https://b0tfleyz.github.io/CZSKtiers/overall)
 - 💬 [Discord Server](https://discord.gg/rAnR4hfKzw)
 - 📁 [Zdrojový kód](https://github.com/kozialondrej-jpg/cz-sk-pvp-comunity-tier-tagger-)
 
