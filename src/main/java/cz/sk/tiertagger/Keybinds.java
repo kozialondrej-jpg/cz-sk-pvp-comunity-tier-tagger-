@@ -36,7 +36,7 @@ public class Keybinds {
             "key.czsk_tier_tagger.change_gamemode",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_UNKNOWN,
-            "key.categories.misc"
+            KeyBinding.Category.MISC
         ));
         
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
