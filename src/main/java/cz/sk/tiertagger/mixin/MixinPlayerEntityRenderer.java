@@ -4,40 +4,41 @@ import cz.sk.tiertagger.CzskTierTagger;
 import cz.sk.tiertagger.DataFetcher;
 import cz.sk.tiertagger.ShowedTier;
 import cz.sk.tiertagger.tiers.PlayerInfo;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerEntityRenderer.class)
-public class MixinPlayerEntityRenderer {
+public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     
-    @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V",
-            at = @At("HEAD"))
-    private void onRenderLabelIfPresent(PlayerEntityRenderState state, MatrixStack matrices, 
-                                        OrderedRenderCommandQueue renderCommandQueue, CameraRenderState cameraState, CallbackInfo ci) {
+    public MixinPlayerEntityRenderer(net.minecraft.client.render.entity.EntityRendererFactory.Context ctx, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
+        super(ctx, model, shadowRadius);
+    }
+    
+    @Redirect(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V",
+              at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V"))
+    private void redirectRenderLabel(LivingEntityRenderer<?, ?> instance, Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float tickDelta) {
+        Text modifiedText = text;
+        
         try {
-            // Získáme jméno hráče z renderState
-            String playerName = state.playerName != null ? state.playerName.getString() : null;
-            if (playerName == null || playerName.isEmpty()) {
-                return;
-            }
-            
-            PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
-            if (info != null) {
-                String suffix = ShowedTier.showedTier(info);
-                CzskTierTagger.LOGGER.debug("[Nametag] Hráč: {} má suffix: {}", playerName, suffix);
-                if (suffix != null && !suffix.isEmpty()) {
-                    // Modifikujeme playerName v renderState přímo
-                    if (state.playerName != null) {
-                        state.playerName = state.playerName.copy()
+            if (entity instanceof AbstractClientPlayerEntity player) {
+                String playerName = player.getName().getString();
+                PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
+                
+                if (info != null) {
+                    String suffix = ShowedTier.showedTier(info);
+                    CzskTierTagger.LOGGER.debug("[Nametag] Hráč: {} má suffix: {}", playerName, suffix);
+                    if (suffix != null && !suffix.isEmpty()) {
+                        modifiedText = text.copy()
                             .append(Text.literal(" " + suffix)
                                 .styled(s -> s.withColor(Formatting.GOLD)));
                     }
@@ -46,5 +47,7 @@ public class MixinPlayerEntityRenderer {
         } catch (Exception e) {
             CzskTierTagger.LOGGER.error("[Nametag] Chyba: {}", e.getMessage());
         }
+        
+        super.renderLabelIfPresent((AbstractClientPlayerEntity)entity, modifiedText, matrices, vertexConsumers, light, tickDelta);
     }
 }

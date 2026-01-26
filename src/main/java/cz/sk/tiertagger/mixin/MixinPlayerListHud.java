@@ -22,7 +22,7 @@ public class MixinPlayerListHud {
             return;
         }
         
-        String playerName = entry.getProfile().name();
+        String playerName = entry.getProfile().getName();
         if (playerName == null || playerName.isEmpty()) {
             return;
         }
