@@ -83,8 +83,8 @@ public class CommandManager {
 
             Collection<PlayerListEntry> players = client.getNetworkHandler().getPlayerList();
             List<String> names = players.stream()
-                .map(entry -> entry.getProfile().name())
-                .toList();
+                .map(entry -> entry.getProfile().getName())
+                .collect(Collectors.toList());
 
             for (String name : names) {
                 builder.suggest(name);
