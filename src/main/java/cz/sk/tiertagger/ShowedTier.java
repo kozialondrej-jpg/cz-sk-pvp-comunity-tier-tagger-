@@ -24,35 +24,35 @@ public class ShowedTier {
         Map.entry("60", 14)   // HT1
     );
     
-    // Unicode znaky pro kity
+    // Unicode znaky pro kity - mapování na ikony z font/tiers.json
     private static final Map<String, String> KIT_ICON = Map.ofEntries(
-        Map.entry("Crystal", "\uEE00"),
-        Map.entry("Axe", "\uEE01"),
-        Map.entry("Sword", "\uEE02"),
-        Map.entry("UHC", "\uEE03"),
-        Map.entry("NPot", "\uEE04"),
-        Map.entry("Pot", "\uEE05"),
-        Map.entry("SMP", "\uEE06"),
-        Map.entry("DiaSMP", "\uEE07"),
-        Map.entry("Mace", "\uEE08")
+        Map.entry("Crystal", "\uEE00"),  // Crystal icon
+        Map.entry("Axe", "\uEE01"),      // Axe icon
+        Map.entry("Sword", "\uEE02"),    // Sword icon
+        Map.entry("UHC", "\uEE03"),      // UHC icon
+        Map.entry("NPot", "\uEE04"),     // NPot icon
+        Map.entry("Pot", "\uEE05"),      // Pot icon
+        Map.entry("SMP", "\uEE06"),      // SMP icon
+        Map.entry("DiaSMP", "\uEE07"),   // DiaSMP icon
+        Map.entry("Mace", "\uEE08")      // Mace icon
     );
     
-    // Unicode znaky pro tiery
+    // Unicode znaky pro tiery - mapování na ikony z font/tiers.json
     private static final Map<String, String> TIER_ICON = Map.ofEntries(
-        Map.entry("1", "\uEF00"),   // LT5
-        Map.entry("2", "\uEF01"),   // HT5
-        Map.entry("3", "\uEF02"),   // LT4
-        Map.entry("5", "\uEF03"),   // HT4
-        Map.entry("10", "\uEF04"),  // LT3
-        Map.entry("16", "\uEF05"),  // HT3
-        Map.entry("24", "\uEF06"),  // LT2
-        Map.entry("32", "\uEF07"),  // HT2
-        Map.entry("48", "\uEF08"),  // LT1
-        Map.entry("60", "\ued09"),  // HT1
-        Map.entry("22", "\uEE09"),  // RLT2
-        Map.entry("29", "\uEE0a"),  // RHT2
-        Map.entry("43", "\uEE0b"),  // RLT1
-        Map.entry("54", "\uEE0c")   // RHT1
+        Map.entry("1", "\uEF00"),    // LT5
+        Map.entry("2", "\uEF01"),    // HT5
+        Map.entry("3", "\uEF02"),    // LT4
+        Map.entry("5", "\uEF03"),    // HT4
+        Map.entry("10", "\uEF04"),   // LT3
+        Map.entry("16", "\uEF05"),   // HT3
+        Map.entry("24", "\uEF06"),   // LT2
+        Map.entry("32", "\uEF07"),   // HT2
+        Map.entry("48", "\uEF08"),   // LT1
+        Map.entry("60", "\ued09"),   // HT1
+        Map.entry("22", "\uEE09"),   // RLT2
+        Map.entry("29", "\uEE0a"),   // RHT2
+        Map.entry("43", "\uEE0b"),   // RLT1
+        Map.entry("54", "\uEE0c")    // RHT1
     );
     
     private static final Map<String, String> KIT_DISPLAY_NAMES = Map.ofEntries(
@@ -101,7 +101,7 @@ public class ShowedTier {
                 if (Objects.equals(tier.category, config.gamemode)) {
                     String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
                     String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
-                    return "[" + tierIcon + " " + kitIcon + "]";
+                    return "[" + tierIcon + kitIcon + "]";
                 }
             }
             return "";
@@ -122,7 +122,7 @@ public class ShowedTier {
         if (bestTier != null) {
             String tierIcon = TIER_ICON.getOrDefault(bestTier.tier, "?");
             String kitIcon = KIT_ICON.getOrDefault(bestTier.category, "?");
-            return "[" + tierIcon + " " + kitIcon + "]";
+            return "[" + tierIcon + kitIcon + "]";
         }
         
         return "";
@@ -150,7 +150,9 @@ public class ShowedTier {
             for (Tier tier : sortedTiers) {
                 String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
                 String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
-                msg.append("\n  ").append(tierIcon).append(" ").append(kitIcon);
+                String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
+                String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
+                msg.append("\n  ").append(tierIcon).append(kitIcon).append(" - ").append(kitName).append(": ").append(tierName);
             }
         } else {
             return "HRÁČ NEHODNOCEN";
