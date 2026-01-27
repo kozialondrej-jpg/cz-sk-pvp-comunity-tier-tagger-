@@ -20,13 +20,14 @@ public class DataFetcher {
     private static Map<String, PlayerInfo> cachedData = new HashMap<>();
     private static long lastFetchTime = 0;
     private static final long CACHE_DURATION = 300000; // 5 minut cache
+    private static boolean isFetching = false;
     
     private static final String[] KIT_NAMES = {"Crystal", "Axe", "Sword", "UHC", "Npot", "Pot", "SMP", "DiaSMP", "Mace"};
     
     public static PlayerInfo getPlayerInfo(String playerName) {
-        // Aktualizuj cache pokud je starý
-        if (System.currentTimeMillis() - lastFetchTime > CACHE_DURATION || cachedData.isEmpty()) {
-            fetchAllData();
+        // Pokud cache je starý, spusť refresh na pozadí (ale neblokuj)
+        if ((System.currentTimeMillis() - lastFetchTime > CACHE_DURATION || cachedData.isEmpty()) && !isFetching) {
+            new Thread(() -> fetchAllData()).start();
         }
         
         return cachedData.get(playerName.toLowerCase());
@@ -34,6 +35,7 @@ public class DataFetcher {
     
     private static void fetchAllData() {
         try {
+            isFetching = true;
             CzskTierTagger.LOGGER.info("[DataFetcher] Zahajuji stahování CZSK Tier dat...");
             
             HttpRequest request = HttpRequest.newBuilder()
@@ -62,6 +64,8 @@ public class DataFetcher {
             }
         } catch (Exception e) {
             CzskTierTagger.LOGGER.error("[DataFetcher] Kritická chyba při stahování: " + e.getMessage(), e);
+        } finally {
+            isFetching = false;
         }
     }
     

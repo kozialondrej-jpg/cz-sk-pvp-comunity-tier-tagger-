@@ -5,10 +5,12 @@ Minecraft Fabric mod pro zobrazování CZSK PvP tierů u hráčů na serveru.
 ## ✨ Funkce
 
 - **Automatické zobrazení tierů** - Tier tagy se automaticky zobrazují u jmen hráčů
+- **Grafické ikony** - Tiery a kity se zobrazují jako grafické ikony, ne text
 - **Podpora více gamemodů** - Crystal, Sword, UHC, Pot, NPot, SMP, Axe, DiaSMP, Mace
 - **Přepínání gamemodů** - Klávesová zkratka pro změnu zobrazovaného gamemodu
 - **Příkazy** - `/czsktiers <jméno>` pro zobrazení detailů hráče
 - **Automatická aktualizace** - Data se načítají z [CZSK Tierlist](https://b0tfleyz.github.io/CZSKtiers/overall)
+- **Asynchronní cache** - Hra se nezmrazí při načítání dat
 
 ---
 

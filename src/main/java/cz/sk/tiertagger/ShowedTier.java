@@ -24,22 +24,35 @@ public class ShowedTier {
         Map.entry("60", 14)   // HT1
     );
     
-    private static final Map<String, String> TIER_EMOJI = Map.ofEntries(
-        Map.entry("-", ""),
-        Map.entry("1", "LT5"),
-        Map.entry("2", "HT5"),
-        Map.entry("3", "LT4"),
-        Map.entry("5", "HT4"),
-        Map.entry("10", "LT3"),
-        Map.entry("16", "HT3"),
-        Map.entry("24", "LT2"),
-        Map.entry("32", "HT2"),
-        Map.entry("48", "LT1"),
-        Map.entry("60", "HT1"),
-        Map.entry("22", "RLT2"),
-        Map.entry("29", "RHT2"),
-        Map.entry("43", "RLT1"),
-        Map.entry("54", "RHT1")
+    // Unicode znaky pro kity
+    private static final Map<String, String> KIT_ICON = Map.ofEntries(
+        Map.entry("Crystal", "\uEE00"),
+        Map.entry("Axe", "\uEE01"),
+        Map.entry("Sword", "\uEE02"),
+        Map.entry("UHC", "\uEE03"),
+        Map.entry("NPot", "\uEE04"),
+        Map.entry("Pot", "\uEE05"),
+        Map.entry("SMP", "\uEE06"),
+        Map.entry("DiaSMP", "\uEE07"),
+        Map.entry("Mace", "\uEE08")
+    );
+    
+    // Unicode znaky pro tiery
+    private static final Map<String, String> TIER_ICON = Map.ofEntries(
+        Map.entry("1", "\uEF00"),   // LT5
+        Map.entry("2", "\uEF01"),   // HT5
+        Map.entry("3", "\uEF02"),   // LT4
+        Map.entry("5", "\uEF03"),   // HT4
+        Map.entry("10", "\uEF04"),  // LT3
+        Map.entry("16", "\uEF05"),  // HT3
+        Map.entry("24", "\uEF06"),  // LT2
+        Map.entry("32", "\uEF07"),  // HT2
+        Map.entry("48", "\uEF08"),  // LT1
+        Map.entry("60", "\ued09"),  // HT1
+        Map.entry("22", "\uEE09"),  // RLT2
+        Map.entry("29", "\uEE0a"),  // RHT2
+        Map.entry("43", "\uEE0b"),  // RLT1
+        Map.entry("54", "\uEE0c")   // RHT1
     );
     
     private static final Map<String, String> KIT_DISPLAY_NAMES = Map.ofEntries(
@@ -86,10 +99,9 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
-                    String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
-                    return "[" + 
-                           TIER_EMOJI.getOrDefault(tier.tier, "?") + 
-                           " " + kitName + "]";
+                    String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
+                    String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
+                    return "[" + tierIcon + " " + kitIcon + "]";
                 }
             }
             return "";
@@ -108,10 +120,9 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
-            String kitName = KIT_DISPLAY_NAMES.getOrDefault(bestTier.category, bestTier.category);
-            return "[" + 
-                   TIER_EMOJI.getOrDefault(bestTier.tier, "?") + 
-                   " " + kitName + "]";
+            String tierIcon = TIER_ICON.getOrDefault(bestTier.tier, "?");
+            String kitIcon = KIT_ICON.getOrDefault(bestTier.category, "?");
+            return "[" + tierIcon + " " + kitIcon + "]";
         }
         
         return "";
@@ -137,12 +148,9 @@ public class ShowedTier {
             });
             
             for (Tier tier : sortedTiers) {
-                String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
-                String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
-                msg.append("\n  > ")
-                   .append(kitName)
-                   .append(": ")
-                   .append(tierName);
+                String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
+                String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
+                msg.append("\n  ").append(tierIcon).append(" ").append(kitIcon);
             }
         } else {
             return "HRÁČ NEHODNOCEN";
