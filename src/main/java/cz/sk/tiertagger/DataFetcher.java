@@ -17,17 +17,25 @@ public class DataFetcher {
         .build();
     private static final String CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTsYd1Hv8XjsdskgT2O-_Otwe3DKxXTXECPE0s4JcPwPPnLMMpknU_-y8EHNBZTtVEQgzicFKcgluSU/pub?output=csv";
     
-    private static Map<String, PlayerInfo> cachedData = new HashMap<>();
+    private static final Map<String, PlayerInfo> cachedData = new HashMap<>();
     private static long lastFetchTime = 0;
     private static final long CACHE_DURATION = 300000; // 5 minut cache
-    private static boolean isFetching = false;
+    private static volatile boolean isFetching = false;
+    private static volatile boolean initialFetchDone = false;
     
     private static final String[] KIT_NAMES = {"Crystal", "Axe", "Sword", "UHC", "Npot", "Pot", "SMP", "DiaSMP", "Mace"};
     
     public static PlayerInfo getPlayerInfo(String playerName) {
         // Pokud cache je starý, spusť refresh na pozadí (ale neblokuj)
-        if ((System.currentTimeMillis() - lastFetchTime > CACHE_DURATION || cachedData.isEmpty()) && !isFetching) {
-            new Thread(() -> fetchAllData()).start();
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime - lastFetchTime > CACHE_DURATION || (!initialFetchDone && cachedData.isEmpty())) && !isFetching) {
+            synchronized (DataFetcher.class) {
+                // Double-check locking pattern
+                if (!isFetching && ((currentTime - lastFetchTime > CACHE_DURATION) || (!initialFetchDone && cachedData.isEmpty()))) {
+                    isFetching = true;
+                    new Thread(() -> fetchAllData(), "CZSK-Tier-Fetcher").start();
+                }
+            }
         }
         
         return cachedData.get(playerName.toLowerCase());
@@ -35,13 +43,14 @@ public class DataFetcher {
     
     private static void fetchAllData() {
         try {
-            isFetching = true;
             CzskTierTagger.LOGGER.info("[DataFetcher] Zahajuji stahování CZSK Tier dat...");
+            long startTime = System.currentTimeMillis();
             
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(CSV_URL))
                 .GET()
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                .timeout(java.time.Duration.ofSeconds(15))
                 .build();
             
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -58,9 +67,16 @@ public class DataFetcher {
                 CzskTierTagger.LOGGER.debug("[DataFetcher] Staženo " + body.length() + " bytů");
                 parseCSVData(body);
                 lastFetchTime = System.currentTimeMillis();
+                initialFetchDone = true;
+                
+                long duration = System.currentTimeMillis() - startTime;
+                CzskTierTagger.LOGGER.info("[DataFetcher] Dokončeno za " + duration + "ms");
             } else {
                 CzskTierTagger.LOGGER.error("[DataFetcher] Chyba: HTTP " + response.statusCode());
-                CzskTierTagger.LOGGER.error("[DataFetcher] Response: " + response.body().substring(0, Math.min(200, response.body().length())));
+                String responseBody = response.body();
+                if (responseBody != null && !responseBody.isEmpty()) {
+                    CzskTierTagger.LOGGER.error("[DataFetcher] Response: " + responseBody.substring(0, Math.min(200, responseBody.length())));
+                }
             }
         } catch (Exception e) {
             CzskTierTagger.LOGGER.error("[DataFetcher] Kritická chyba při stahování: " + e.getMessage(), e);
@@ -95,7 +111,8 @@ public class DataFetcher {
                 return;
             }
             
-            cachedData.clear();
+            // Vytvoř novou mapu místo čištění staré (thread-safe)
+            Map<String, PlayerInfo> newData = new HashMap<>();
             int loadedPlayers = 0;
             int skippedPlayers = 0;
             
@@ -161,12 +178,18 @@ public class DataFetcher {
                     player.tiers = tiers;
                     player.score = totalScore;
                     
-                    cachedData.put(player.nick.toLowerCase(), player);
+                    newData.put(player.nick.toLowerCase(), player);
                     loadedPlayers++;
                 } catch (Exception e) {
                     CzskTierTagger.LOGGER.warn("Chyba pri zpracovani radku " + i + ": " + e.getMessage());
                     skippedPlayers++;
                 }
+            }
+            
+            // Atomicky nahraď starou cache novou
+            synchronized (DataFetcher.class) {
+                cachedData.clear();
+                cachedData.putAll(newData);
             }
             
             CzskTierTagger.LOGGER.info("[CSV Parser] Úspěšně načteno " + loadedPlayers + " hráčů");
@@ -202,7 +225,22 @@ public class DataFetcher {
     }
     
     public static void refreshCache() {
-        lastFetchTime = 0;
-        fetchAllData();
+        synchronized (DataFetcher.class) {
+            if (!isFetching) {
+                lastFetchTime = 0;
+                isFetching = true;
+                new Thread(() -> fetchAllData(), "CZSK-Tier-Fetcher-Manual").start();
+            } else {
+                CzskTierTagger.LOGGER.info("[DataFetcher] Fetch již probíhá, přeskakuji...");
+            }
+        }
+    }
+    
+    public static boolean isDataLoaded() {
+        return initialFetchDone && !cachedData.isEmpty();
+    }
+    
+    public static int getCachedPlayerCount() {
+        return cachedData.size();
     }
 }

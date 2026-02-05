@@ -28,18 +28,9 @@ public class CzskTierTagger implements ClientModInitializer {
                 CommandManager.registerCommands(dispatcher);
             });
             
-            // Načti data při startu (na pozadí)
-            Thread dataThread = new Thread(() -> {
-                try {
-                    DataFetcher.refreshCache();
-                    LOGGER.info("CZSK Tier data úspěšně načtena");
-                } catch (Exception e) {
-                    LOGGER.error("Chyba při načítání CZSK Tier dat", e);
-                }
-            });
-            dataThread.setName("CZSK-TierData-Loader");
-            dataThread.setDaemon(true);
-            dataThread.start();
+            // Načti data při startu (na pozadí) - refreshCache() už používá vlastní vlákno
+            LOGGER.info("Spouštím načítání CZSK Tier dat...");
+            DataFetcher.refreshCache();
             
             // Hook do načítání entit - přidej tier suffix k hráčům
             ClientEntityEvents.ENTITY_LOAD.register((entity, clientWorld) -> {
