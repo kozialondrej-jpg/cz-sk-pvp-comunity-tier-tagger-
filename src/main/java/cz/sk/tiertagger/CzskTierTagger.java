@@ -107,7 +107,7 @@ public class CzskTierTagger implements ClientModInitializer {
             try {
                 String playerName = player.getName().getString();
                 PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
-                String suffix = info != null ? ShowedTier.showedTier(info) : null;
+                String suffix = info != null ? ShowedTier.showedTierTag(info) : null;
                 ((TierModifier) player).setSuffix(suffix);
             } catch (Exception e) {
                 LOGGER.error("Chyba při aktualizaci nametagu", e);
@@ -127,7 +127,7 @@ public class CzskTierTagger implements ClientModInitializer {
             }
 
             PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
-            String suffix = info != null ? ShowedTier.showedTier(info) : null;
+            String suffix = info != null ? ShowedTier.showedTierTag(info) : null;
             UUID playerId = entry.getProfile().id();
 
             if (suffix == null || suffix.isEmpty()) {

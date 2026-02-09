@@ -99,9 +99,7 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
-                    String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
-                    String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
-                    return kitName + " " + tierName;
+                    return formatKitTier(tier);
                 }
             }
             return "";
@@ -120,9 +118,7 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
-            String tierName = TIER_NAMES.getOrDefault(bestTier.tier, bestTier.tier);
-            String kitName = KIT_DISPLAY_NAMES.getOrDefault(bestTier.category, bestTier.category);
-            return kitName + " " + tierName;
+            return formatKitTier(bestTier);
         }
         
         return "";
@@ -148,14 +144,26 @@ public class ShowedTier {
             });
             
             for (Tier tier : sortedTiers) {
-                String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
-                String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
-                msg.append("\n  ").append(kitName).append(" ").append(tierName);
+                msg.append("\n  ").append(formatKitTier(tier));
             }
         } else {
             return "HRÁČ NEHODNOCEN";
         }
         
         return msg.toString();
+    }
+
+    public static String showedTierTag(PlayerInfo info) {
+        String value = showedTier(info);
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        return "[" + value + "]";
+    }
+
+    private static String formatKitTier(Tier tier) {
+        String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
+        String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
+        return kitName + " " + tierName;
     }
 }

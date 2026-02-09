@@ -69,12 +69,9 @@ public class Keybinds {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
                     for (AbstractClientPlayerEntity player : world.getPlayers()) {
-                        new Thread(() -> {
-                            PlayerInfo info = DataFetcher.getPlayerInfo(player.getName().getString());
-                            if (info != null) {
-                                ((TierModifier) player).setSuffix(ShowedTier.showedTier(info));
-                            }
-                        }).start();
+                        PlayerInfo info = DataFetcher.getPlayerInfo(player.getName().getString());
+                        String suffix = info != null ? ShowedTier.showedTier(info) : null;
+                        ((TierModifier) player).setSuffix(suffix);
                     }
                 }
             }
