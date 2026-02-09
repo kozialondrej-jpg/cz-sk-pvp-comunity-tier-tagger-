@@ -36,7 +36,7 @@ public class Keybinds {
             "key.czsk_tier_tagger.change_gamemode",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_UNKNOWN,
-            "category.czsk_tier_tagger"
+            KeyBinding.Category.MISC
         );
         KeyBindingHelper.registerKeyBinding(changeGamemode);
         
