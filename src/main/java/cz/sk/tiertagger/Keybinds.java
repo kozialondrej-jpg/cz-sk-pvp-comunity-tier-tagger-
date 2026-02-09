@@ -32,12 +32,13 @@ public class Keybinds {
     );
     
     public static void registerKeybinds() {
-        changeGamemode = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        changeGamemode = new KeyBinding(
             "key.czsk_tier_tagger.change_gamemode",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_UNKNOWN,
-            "key.categories.misc"
-        ));
+            KeyBinding.Category.MISC
+        );
+        KeyBindingHelper.registerKeyBinding(changeGamemode);
         
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (changeGamemode.wasPressed()) {

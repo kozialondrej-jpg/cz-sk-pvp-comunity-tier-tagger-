@@ -12,7 +12,6 @@ import net.minecraft.util.Formatting;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -83,8 +82,8 @@ public class CommandManager {
 
             Collection<PlayerListEntry> players = client.getNetworkHandler().getPlayerList();
             List<String> names = players.stream()
-                .map(entry -> entry.getProfile().getName())
-                .collect(Collectors.toList());
+                .map(entry -> entry.getProfile().name())
+                .toList();
 
             for (String name : names) {
                 builder.suggest(name);
