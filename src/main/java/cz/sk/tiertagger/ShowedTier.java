@@ -99,9 +99,9 @@ public class ShowedTier {
         if (!Objects.equals(config.gamemode, "All")) {
             for (Tier tier : info.tiers) {
                 if (Objects.equals(tier.category, config.gamemode)) {
-                    String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
-                    String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
-                    return "[" + tierIcon + kitIcon + "]";
+                    String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
+                    String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
+                    return kitName + " " + tierName;
                 }
             }
             return "";
@@ -120,9 +120,9 @@ public class ShowedTier {
         }
         
         if (bestTier != null) {
-            String tierIcon = TIER_ICON.getOrDefault(bestTier.tier, "?");
-            String kitIcon = KIT_ICON.getOrDefault(bestTier.category, "?");
-            return "[" + tierIcon + kitIcon + "]";
+            String tierName = TIER_NAMES.getOrDefault(bestTier.tier, bestTier.tier);
+            String kitName = KIT_DISPLAY_NAMES.getOrDefault(bestTier.category, bestTier.category);
+            return kitName + " " + tierName;
         }
         
         return "";
@@ -148,11 +148,9 @@ public class ShowedTier {
             });
             
             for (Tier tier : sortedTiers) {
-                String tierIcon = TIER_ICON.getOrDefault(tier.tier, "?");
-                String kitIcon = KIT_ICON.getOrDefault(tier.category, "?");
                 String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
                 String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
-                msg.append("\n  ").append(tierIcon).append(kitIcon).append(" - ").append(kitName).append(": ").append(tierName);
+                msg.append("\n  ").append(kitName).append(" ").append(tierName);
             }
         } else {
             return "HRÁČ NEHODNOCEN";
