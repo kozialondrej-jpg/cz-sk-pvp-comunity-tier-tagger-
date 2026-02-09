@@ -4,13 +4,14 @@ Minecraft Fabric mod pro zobrazování CZSK PvP tierů u hráčů na serveru.
 
 ## ✨ Funkce
 
-- **Automatické zobrazení tierů** - Tier tagy se automaticky zobrazují u jmen hráčů
-- **Grafické ikony** - Tiery a kity se zobrazují jako grafické ikony, ne text
+- **Automatické zobrazení tierů v nametazích** - Tier tagy se automaticky zobrazují vedle jmen hráčů
+- **Zobrazení tierů v tab listu** - Vidíš tiery hráčů také v TAB přehledu
+- **Textové formáty** - Tiery se zobrazují jako text (např. `[Sword LT4]`)
 - **Podpora více gamemodů** - Crystal, Sword, UHC, Pot, NPot, SMP, Axe, DiaSMP, Mace
-- **Přepínání gamemodů** - Klávesová zkratka pro změnu zobrazovaného gamemodu
-- **Příkazy** - `/czsktiers <jméno>` pro zobrazení detailů hráče
+- **Přepínání gamemodů** - Klávesová zkratka pro dynamickou změnu zobrazovaného gamemodu
+- **Príkazy** - `/czsktiers <jméno>` pro zobrazení detailů hráče, `/czsktiers refresh` pro reload cache
 - **Automatická aktualizace** - Data se načítají z [CZSK Tierlist](https://b0tfleyz.github.io/CZSKtiers/overall)
-- **Asynchronní cache** - Hra se nezmrazí při načítání dat
+- **Asynchronní cache** - Hra se nezmrazí při načítání dat (cache na 5 minut)
 
 ---
 
@@ -42,7 +43,7 @@ gradlew.bat build
 
 **3. Výstupní soubor:**
 ```
-build/devlibs/czsk-tier-tagger-1.0.0-dev.jar
+build/libs/czsk-tier-tagger-1.0.1.jar
 ```
 
 ---
@@ -50,15 +51,15 @@ build/devlibs/czsk-tier-tagger-1.0.0-dev.jar
 ## 📦 Instalace do Minecraftu
 
 ### Požadavky
-- **Minecraft 1.21.4**
-- **[Fabric Loader](https://fabricmc.net/use/)** 0.16.9+
-- **[Fabric API](https://modrinth.com/mod/fabric-api)**
+- **Minecraft 1.21.10**
+- **[Fabric Loader](https://fabricmc.net/use/)** 0.18.4+
+- **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.138.4+
 
 ### Postup
-1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.4
+1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.10
 2. Stáhněte [Fabric API](https://modrinth.com/mod/fabric-api) a vložte do `.minecraft/mods/`
 3. Sestavte mod (viz výše) nebo stáhněte JAR z [Releases](https://github.com/kozialondrej-jpg/cz-sk-pvp-comunity-tier-tagger-/releases)
-4. Vložte `czsk-tier-tagger-1.0.0-dev.jar` do `.minecraft/mods/`
+4. Vložte JAR soubor do `.minecraft/mods/`
 5. Spusťte Minecraft
 
 ---
@@ -74,8 +75,9 @@ build/devlibs/czsk-tier-tagger-1.0.0-dev.jar
 
 ### Klávesové zkratky
 
-- **Změna gamemodu** - Ve výchozím nastavení není přiřazena žádná klávesa
-  - Nastavte v: `Options → Controls → Key Binds → CZSK Tier Tagger`
+- **Změna gamemodu** (výchozí: Unassigned)
+  - Nastavte v: `Options → Controls → Key Binds → Miscellaneous → Změnit zobrazovaný gamemode`
+  - Stisknutím klávesy se gamemody budou cyklicky přepínat
 
 ### Gamemody
 
@@ -130,19 +132,23 @@ Konfigurační soubor: `.minecraft/config/czsk_tier_tagger.json`
 
 ## 🛠️ Použité technologie
 
-- **Minecraft** 1.21.4
-- **Fabric Loader** 0.16.9+
-- **Fabric API** 0.109.0+
-- **Mixin** - Pro modifikaci hry
+- **Minecraft** 1.21.10
+- **Fabric Loader** 0.18.4+
+- **Fabric API** 0.138.4+
+- **Mixin & MixinExtras** - Pro modifikaci renderování nametaguů
 - **Gson** - Pro práci s JSON
+- **Google Sheets API** - Pro načítání tier dat
 
 ---
 
 ## 📝 Poznámky
 
-- Data se automaticky cachují na 5 minut
-- Mod funguje pouze na straně klienta
-- Vyžaduje připojení k internetu pro načtení dat
+- Data se automaticky cachují na 5 minut (lze resetovat příkazem `/czsktiers refresh`)
+- Tierové tagy se zobrazují v nametazích ve formátu `[Kit Tier]` (např. `[Sword LT4]`)
+- Tierové tagy se zobrazují v TAB listu (přehledu hráčů)
+- Koláčové tagy v příkazech se zobrazují bez hranatých závorek
+- Mod funguje pouze na straně klienta (client-side mod)
+- Vyžaduje připojení k internetu pro inicializaci dat
 
 ---
 
