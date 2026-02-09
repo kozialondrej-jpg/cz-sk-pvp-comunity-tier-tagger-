@@ -23,17 +23,23 @@ public class CommandManager {
                 .suggests(playerNameSuggester())
                 .executes(context -> {
                     String name = StringArgumentType.getString(context, "jmeno");
+                    CzskTierTagger.LOGGER.info("[Command] Spouštím příkaz /czsktiers pro hráče: {}", name);
                     
                     new Thread(() -> {
                         PlayerInfo info = DataFetcher.getPlayerInfo(name);
                         MinecraftClient client = MinecraftClient.getInstance();
                         
+                        CzskTierTagger.LOGGER.info("[Command] PlayerInfo pro {}: {}", name, info != null ? "nalezen" : "nenalezen");
+                        
                         if (client.player != null) {
                             if (info != null) {
-                                Text text = Text.literal(ShowedTier.showedMessage(info))
+                                String message = ShowedTier.showedMessage(info);
+                                CzskTierTagger.LOGGER.info("[Command] Odesílám zprávu: {}", message);
+                                Text text = Text.literal(message)
                                     .styled(s -> s.withColor(Formatting.GOLD));
                                 client.player.sendMessage(text, false);
                             } else {
+                                CzskTierTagger.LOGGER.info("[Command] Hráč {} nebyl nalezen v cache", name);
                                 client.player.sendMessage(
                                     Text.literal("Hráč '" + name + "' nebyl nalezen v CZSK Tierlistu")
                                         .styled(s -> s.withColor(Formatting.RED)), 

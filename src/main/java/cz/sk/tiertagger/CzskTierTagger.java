@@ -26,11 +26,25 @@ public class CzskTierTagger implements ClientModInitializer {
             // Registruj příkazy
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
                 CommandManager.registerCommands(dispatcher);
+                LOGGER.info("CZSK Tier příkazy zaregistrovány");
             });
             
             // Načti data při startu (na pozadí) - refreshCache() už používá vlastní vlákno
             LOGGER.info("Spouštím načítání CZSK Tier dat...");
             DataFetcher.refreshCache();
+            
+            // Vypíše stav po 5 sekundách
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    LOGGER.info("=== CZSK Tier Tagger Status ===");
+                    LOGGER.info("Data loaded: " + DataFetcher.isDataLoaded());
+                    LOGGER.info("Cached players: " + DataFetcher.getCachedPlayerCount());
+                    LOGGER.info("===============================");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
             
             // Hook do načítání entit - přidej tier suffix k hráčům
             ClientEntityEvents.ENTITY_LOAD.register((entity, clientWorld) -> {
