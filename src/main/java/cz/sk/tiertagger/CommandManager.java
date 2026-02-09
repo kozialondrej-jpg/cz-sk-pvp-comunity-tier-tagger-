@@ -37,14 +37,14 @@ public class CommandManager {
                                 CzskTierTagger.LOGGER.info("[Command] Odesílám zprávu: {}", message);
                                 Text text = Text.literal(message)
                                     .styled(s -> s.withColor(Formatting.GOLD));
-                                client.player.sendMessage(text, false);
+                                // Zavolej na render vlákně
+                                client.execute(() -> client.player.sendMessage(text, false));
                             } else {
                                 CzskTierTagger.LOGGER.info("[Command] Hráč {} nebyl nalezen v cache", name);
-                                client.player.sendMessage(
-                                    Text.literal("Hráč '" + name + "' nebyl nalezen v CZSK Tierlistu")
-                                        .styled(s -> s.withColor(Formatting.RED)), 
-                                    false
-                                );
+                                Text errorText = Text.literal("Hráč '" + name + "' nebyl nalezen v CZSK Tierlistu")
+                                    .styled(s -> s.withColor(Formatting.RED));
+                                // Zavolej na render vlákně
+                                client.execute(() -> client.player.sendMessage(errorText, false));
                             }
                         }
                     }).start();
@@ -64,15 +64,7 @@ public class CommandManager {
                         );
                     }
                     
-                    new Thread(() -> {
-                        DataFetcher.refreshCache();
-                        if (client.player != null) {
-                            client.player.sendMessage(
-                                Text.literal("Data úspěšně obnovena!").styled(s -> s.withColor(Formatting.GREEN)), 
-                                false
-                            );
-                        }
-                    }).start();
+                    DataFetcher.refreshCache();
                     
                     return 1;
                 }))
