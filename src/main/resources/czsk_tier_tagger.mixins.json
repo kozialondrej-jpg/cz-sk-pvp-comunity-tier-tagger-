@@ -4,8 +4,7 @@
 	"package": "cz.sk.tiertagger.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"MixinPlayerEntity",
-		"MixinPlayerListHud"
+		"MixinPlayerEntity"
 	],
 	"injectors": {
 		"defaultRequire": 1
