@@ -24,7 +24,7 @@ public class MixinPlayerListHud {
         ),
         index = 1
     )
-    private Text modifyPlayerListText(Text text, @Local(ordinal = 2) PlayerListEntry entry) {
+    private Text modifyPlayerListText(Text text, @Local PlayerListEntry entry) {
         CzskTierTagger.LOGGER.debug("[TabList] Volána metoda modifyPlayerListText pro text: {}", text.getString());
         try {
             if (entry != null && entry.getProfile() != null) {
