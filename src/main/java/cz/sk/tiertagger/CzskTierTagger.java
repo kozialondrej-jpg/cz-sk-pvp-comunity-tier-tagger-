@@ -121,14 +121,14 @@ public class CzskTierTagger implements ClientModInitializer {
                 continue;
             }
 
-            String playerName = entry.getProfile().name();
+            String playerName = entry.getProfile().getName();
             if (playerName == null || playerName.isEmpty()) {
                 continue;
             }
 
             PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
             String suffix = info != null ? ShowedTier.showedTierTag(info) : null;
-            UUID playerId = entry.getProfile().id();
+            UUID playerId = entry.getProfile().getId();
 
             if (suffix == null || suffix.isEmpty()) {
                 Text original = originalTabNames.remove(playerId);

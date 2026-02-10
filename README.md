@@ -51,14 +51,14 @@ build/libs/czsk-tier-tagger-1.0.1.jar
 ## 📦 Instalace do Minecraftu
 
 ### Požadavky
-- **Minecraft 1.21.10**
-- **[Fabric Loader](https://fabricmc.net/use/)** 0.18.4+
-- **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.138.4+
+- **Minecraft 1.21.4**
+- **[Fabric Loader](https://fabricmc.net/use/)** 0.16.9+
+- **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.109.0+
 
 ### Postup
-1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.10
+1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.4
 2. Stáhněte [Fabric API](https://modrinth.com/mod/fabric-api) a vložte do `.minecraft/mods/`
-3. Sestavte mod (viz výše) nebo stáhněte JAR z [Releases](https://github.com/kozialondrej-jpg/cz-sk-pvp-comunity-tier-tagger-/releases)
+3. Sestavte mod (viz výše) nebo stáhněte JAR z [Releases](https://github.com/kozialondrej-jpg/cz-sk-pvp-komunity-tier-tagger-/releases)
 4. Vložte JAR soubor do `.minecraft/mods/`
 5. Spusťte Minecraft
 
@@ -132,9 +132,9 @@ Konfigurační soubor: `.minecraft/config/czsk_tier_tagger.json`
 
 ## 🛠️ Použité technologie
 
-- **Minecraft** 1.21.10
-- **Fabric Loader** 0.18.4+
-- **Fabric API** 0.138.4+
+- **Minecraft** 1.21.4
+- **Fabric Loader** 0.16.9+
+- **Fabric API** 0.109.0+
 - **Mixin & MixinExtras** - Pro modifikaci renderování nametaguů
 - **Gson** - Pro práci s JSON
 - **Google Sheets API** - Pro načítání tier dat

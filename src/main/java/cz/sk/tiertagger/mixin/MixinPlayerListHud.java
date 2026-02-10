@@ -28,7 +28,7 @@ public class MixinPlayerListHud {
         CzskTierTagger.LOGGER.debug("[TabList] Volána metoda modifyPlayerListText pro text: {}", text.getString());
         try {
             if (entry != null && entry.getProfile() != null) {
-                String playerName = entry.getProfile().name();
+                String playerName = entry.getProfile().getName();
                 CzskTierTagger.LOGGER.debug("[TabList] Zpracovávám hráče: {}", playerName);
                 if (playerName != null && !playerName.isEmpty()) {
                     PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
