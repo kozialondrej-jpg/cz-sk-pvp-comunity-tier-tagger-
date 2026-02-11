@@ -51,14 +51,14 @@ build/libs/czsk-tier-tagger-1.0.1.jar
 ## 📦 Instalace do Minecraftu
 
 ### Požadavky
-- **Minecraft 1.21.4**
-- **[Fabric Loader](https://fabricmc.net/use/)** 0.16.9+
-- **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.109.0+
+- **Minecraft 1.21.5**
+- **[Fabric Loader](https://fabricmc.net/use/)** 0.16.10+
+- **[Fabric API](https://modrinth.com/mod/fabric-api)** 0.115.1+
 
 ### Postup
-1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.4
+1. Stáhněte a nainstalujte [Fabric Loader](https://fabricmc.net/use/) pro Minecraft 1.21.5
 2. Stáhněte [Fabric API](https://modrinth.com/mod/fabric-api) a vložte do `.minecraft/mods/`
-3. Sestavte mod (viz výše) nebo stáhněte JAR z [Releases](https://github.com/kozialondrej-jpg/cz-sk-pvp-komunity-tier-tagger-/releases)
+3. Sestavte mod (viz výše) nebo stáhněte JAR z [Modrinth](https://modrinth.com/mod/czsk-tiertagger)
 4. Vložte JAR soubor do `.minecraft/mods/`
 5. Spusťte Minecraft
 
@@ -76,7 +76,7 @@ build/libs/czsk-tier-tagger-1.0.1.jar
 ### Klávesové zkratky
 
 - **Změna gamemodu** (výchozí: Unassigned)
-  - Nastavte v: `Options → Controls → Key Binds → Miscellaneous → Změnit zobrazovaný gamemode`
+  - Nastavte v: `Options → Controls → Key Binds → CZSK Tiertagger → Změnit zobrazovaný gamemode`
   - Stisknutím klávesy se gamemody budou cyklicky přepínat
 
 ### Gamemody
@@ -132,9 +132,9 @@ Konfigurační soubor: `.minecraft/config/czsk_tier_tagger.json`
 
 ## 🛠️ Použité technologie
 
-- **Minecraft** 1.21.4
-- **Fabric Loader** 0.16.9+
-- **Fabric API** 0.109.0+
+- **Minecraft** 1.21.5
+- **Fabric Loader** 0.16.10+
+- **Fabric API** 0.115.1+
 - **Mixin & MixinExtras** - Pro modifikaci renderování nametaguů
 - **Gson** - Pro práci s JSON
 - **Google Sheets API** - Pro načítání tier dat
