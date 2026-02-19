@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "czsk_tier_tagger",
+	"version": "${version}",
+	"name": "CZSK Tier Tagger",
+	"description": "Zobrazuje CZSK PvP tiery u hráčů v Minecraftu",
+	"authors": [
+		"kozialondrej"
+	],
+	"contact": {
+		"homepage": "https://b0tfleyz.github.io/CZSKtiers/",
+		"sources": "https://github.com/kozialondrej-jpg/cz-sk-pvp-comunity-tier-tagger-"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/czsk_tier_tagger/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"cz.sk.tiertagger.CzskTierTagger"
+		]
+	},
+	"mixins": [
+		"czsk_tier_tagger.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
