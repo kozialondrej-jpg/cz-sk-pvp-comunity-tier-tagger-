@@ -10,7 +10,6 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,14 +64,13 @@ public class CzskTierTagger implements ClientModInitializer {
                     PlayerEntity player = (PlayerEntity) entity;
                     TierModifier modifier = (TierModifier) player;
                     
-                    if (modifier.getSuffix() == null) {
+                    if (modifier.getSuffixText() == null) {
                         try {
                             String playerName = player.getName().getString();
-                            // Zkus načíst data synchronně
                             PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
                             if (info != null) {
-                                String suffix = ShowedTier.showedTier(info);
-                                modifier.setSuffix(suffix);
+                                Text suffix = ShowedTier.showedTierText(info);
+                                modifier.setSuffixText(suffix);
                                 LOGGER.debug("Přidán tier pro hráče: " + playerName);
                             }
                         } catch (Exception e) {
@@ -107,8 +105,8 @@ public class CzskTierTagger implements ClientModInitializer {
             try {
                 String playerName = player.getName().getString();
                 PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
-                String suffix = info != null ? ShowedTier.showedTierTag(info) : null;
-                ((TierModifier) player).setSuffix(suffix);
+                Text suffix = info != null ? ShowedTier.showedTierText(info) : null;
+                ((TierModifier) player).setSuffixText(suffix);
             } catch (Exception e) {
                 LOGGER.error("Chyba při aktualizaci nametagu", e);
             }
@@ -121,16 +119,16 @@ public class CzskTierTagger implements ClientModInitializer {
                 continue;
             }
 
-            String playerName = entry.getProfile().getName();
+            String playerName = entry.getProfile().name();
             if (playerName == null || playerName.isEmpty()) {
                 continue;
             }
 
             PlayerInfo info = DataFetcher.getPlayerInfo(playerName);
-            String suffix = info != null ? ShowedTier.showedTierTag(info) : null;
-            UUID playerId = entry.getProfile().getId();
+            Text suffix = info != null ? ShowedTier.showedTierText(info) : null;
+            UUID playerId = entry.getProfile().id();
 
-            if (suffix == null || suffix.isEmpty()) {
+            if (suffix == null) {
                 Text original = originalTabNames.remove(playerId);
                 if (original != null) {
                     entry.setDisplayName(original);
@@ -146,8 +144,8 @@ public class CzskTierTagger implements ClientModInitializer {
             });
 
             Text updated = base.copy()
-                .append(Text.literal(" " + suffix)
-                    .styled(s -> s.withColor(Formatting.GOLD)));
+                .append(Text.literal(" "))
+                .append(suffix);
             entry.setDisplayName(updated);
         }
     }

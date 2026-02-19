@@ -1,6 +1,8 @@
 package cz.sk.tiertagger;
 
+import net.minecraft.text.Text;
+
 public interface TierModifier {
-    String getSuffix();
-    void setSuffix(String value);
+    Text getSuffixText();
+    void setSuffixText(Text value);
 }

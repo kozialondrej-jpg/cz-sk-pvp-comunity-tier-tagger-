@@ -2,10 +2,16 @@ package cz.sk.tiertagger;
 
 import cz.sk.tiertagger.tiers.PlayerInfo;
 import cz.sk.tiertagger.tiers.Tier;
+import net.minecraft.text.Style;
+import net.minecraft.text.StyleSpriteSource;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
 public class ShowedTier {
+    private static final Identifier TIERS_FONT = Identifier.of("czsk_tier_tagger", "tiers");
     private static final Map<String, Integer> TIER_IMPORTANCE = Map.ofEntries(
         Map.entry("-", 0),
         Map.entry("1", 1),    // LT5
@@ -26,15 +32,15 @@ public class ShowedTier {
     
     // Unicode znaky pro kity - mapování na ikony z font/tiers.json
     private static final Map<String, String> KIT_ICON = Map.ofEntries(
-        Map.entry("Crystal", "\uEE00"),  // Crystal icon
-        Map.entry("Axe", "\uEE01"),      // Axe icon
-        Map.entry("Sword", "\uEE02"),    // Sword icon
-        Map.entry("UHC", "\uEE03"),      // UHC icon
-        Map.entry("NPot", "\uEE04"),     // NPot icon
-        Map.entry("Pot", "\uEE05"),      // Pot icon
-        Map.entry("SMP", "\uEE06"),      // SMP icon
-        Map.entry("DiaSMP", "\uEE07"),   // DiaSMP icon
-        Map.entry("Mace", "\uEE08")      // Mace icon
+        Map.entry("Crystal", "\uF000"),  // Crystal icon
+        Map.entry("Axe", "\uF001"),      // Axe icon
+        Map.entry("Sword", "\uF002"),    // Sword icon
+        Map.entry("UHC", "\uF003"),      // UHC icon
+        Map.entry("NPot", "\uF004"),     // NPot icon
+        Map.entry("Pot", "\uF005"),      // Pot icon
+        Map.entry("SMP", "\uF006"),      // SMP icon
+        Map.entry("DiaSMP", "\uF007"),   // DiaSMP icon
+        Map.entry("Mace", "\uF008")      // Mace icon
     );
     
     // Unicode znaky pro tiery - mapování na ikony z font/tiers.json
@@ -83,6 +89,62 @@ public class ShowedTier {
         Map.entry("43", "RLT1"),
         Map.entry("54", "RHT1")
     );
+    
+    // Barvy tierů z Tiers modu (mctiers.json)
+    private static final Map<String, Integer> TIER_COLORS = Map.ofEntries(
+        Map.entry("60", 0xe8ba3a),  // HT1 - gold
+        Map.entry("48", 0xd5b355),  // LT1 - light gold
+        Map.entry("32", 0xc4d3e7),  // HT2 - light blue
+        Map.entry("24", 0xa0a7b2),  // LT2 - gray blue
+        Map.entry("16", 0xf89f5a),  // HT3 - orange
+        Map.entry("10", 0xc67b42),  // LT3 - brown orange
+        Map.entry("5", 0x81749a),   // HT4 - purple
+        Map.entry("3", 0x655b79),   // LT4 - dark purple
+        Map.entry("2", 0x8f82a8),   // HT5 - light purple
+        Map.entry("1", 0x655b79),   // LT5 - dark purple
+        Map.entry("54", 0xe8ba3a),  // RHT1 - gold
+        Map.entry("43", 0xd5b355),  // RLT1 - light gold
+        Map.entry("29", 0xc4d3e7),  // RHT2 - light blue
+        Map.entry("22", 0xa0a7b2)   // RLT2 - gray blue
+    );
+    
+    public static Text showedTierText(PlayerInfo info) {
+        ModConfig config = ConfigManager.getConfig();
+        
+        if (Objects.equals(config.gamemode, "Mod Off")) {
+            return null;
+        }
+        
+        if (info == null || info.tiers == null || info.tiers.isEmpty()) {
+            return null;
+        }
+        
+        if (!Objects.equals(config.gamemode, "All")) {
+            for (Tier tier : info.tiers) {
+                if (Objects.equals(tier.category, config.gamemode)) {
+                    return formatKitTierText(tier);
+                }
+            }
+            return null;
+        }
+        
+        Tier bestTier = null;
+        int bestImportance = -1;
+        
+        for (Tier tier : info.tiers) {
+            int importance = TIER_IMPORTANCE.getOrDefault(tier.tier, 0);
+            if (importance > bestImportance) {
+                bestImportance = importance;
+                bestTier = tier;
+            }
+        }
+        
+        if (bestTier != null) {
+            return formatKitTierText(bestTier);
+        }
+        
+        return null;
+    }
     
     public static String showedTier(PlayerInfo info) {
         ModConfig config = ConfigManager.getConfig();
@@ -165,5 +227,25 @@ public class ShowedTier {
         String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
         String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
         return kitName + " " + tierName;
+    }
+    
+    private static Text formatKitTierText(Tier tier) {
+        String tierName = TIER_NAMES.getOrDefault(tier.tier, tier.tier);
+        String iconChar = KIT_ICON.getOrDefault(tier.category, "");
+        int color = TIER_COLORS.getOrDefault(tier.tier, 0xFFAA00);
+        
+        if (iconChar.isEmpty()) {
+            String kitName = KIT_DISPLAY_NAMES.getOrDefault(tier.category, tier.category);
+            return Text.literal(kitName + " " + tierName)
+                .styled(s -> s.withColor(color));
+        }
+        
+        Text iconText = Text.literal(iconChar)
+            .setStyle(Style.EMPTY.withFont(new StyleSpriteSource.Font(TIERS_FONT)));
+        
+        Text tierText = Text.literal(" " + tierName)
+            .styled(s -> s.withColor(color));
+        
+        return Text.empty().append(iconText).append(tierText);
     }
 }

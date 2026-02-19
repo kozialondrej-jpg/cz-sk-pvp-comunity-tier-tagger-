@@ -36,7 +36,7 @@ public class Keybinds {
             "key.czsk_tier_tagger.change_gamemode",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_UNKNOWN,
-            "category.czsk_tier_tagger"
+            KeyBinding.Category.MISC
         );
         KeyBindingHelper.registerKeyBinding(changeGamemode);
         
@@ -65,13 +65,12 @@ public class Keybinds {
                     );
                 }
                 
-                // Aktualizuj všechny hráče
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
                     for (AbstractClientPlayerEntity player : world.getPlayers()) {
                         PlayerInfo info = DataFetcher.getPlayerInfo(player.getName().getString());
-                        String suffix = info != null ? ShowedTier.showedTier(info) : null;
-                        ((TierModifier) player).setSuffix(suffix);
+                        Text suffix = info != null ? ShowedTier.showedTierText(info) : null;
+                        ((TierModifier) player).setSuffixText(suffix);
                     }
                 }
             }
