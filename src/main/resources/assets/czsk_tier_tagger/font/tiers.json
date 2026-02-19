@@ -1,15 +1,67 @@
 {
-	"providers": [
-		{
-			"type": "bitmap",
-			"file": "czsk_tier_tagger:textures/font/tiers.png",
-			"ascent": 8,
-			"height": 8,
-			"chars": [
-				"\uEE00\uEE01\uEE02\uEE03\uEE04\uEE05\uEE06\uEE07\uEE08\uEE09\uEE0a\uEE0b\uEE0c\uEE0d\uEEEE",
-				"\uEF00\uEF01\uEF02\uEF03\uEF04\uEF05\uEF06\uEF07\uEF08",
-				"\ued09"
-			]
-		}
-	]
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/crystal.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF000"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/axe.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF001"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/sword.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF002"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/uhc.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF003"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/neth_pot.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF004"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/pot.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF005"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/smp.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF006"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/dia_smp.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF007"]
+    },
+    {
+      "type": "bitmap",
+      "file": "czsk_tier_tagger:font/kits/mace.png",
+      "height": 7,
+      "ascent": 7,
+      "chars": ["\uF008"]
+    }
+  ]
 }
