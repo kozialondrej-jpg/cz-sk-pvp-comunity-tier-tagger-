@@ -5,7 +5,7 @@
 	"name": "CZSK Tier Tagger",
 	"description": "Zobrazuje CZSK PvP tiery u hráčů v Minecraftu",
 	"authors": [
-		"kransagen"
+		"kozialondrej"
 	],
 	"contact": {
 		"homepage": "https://b0tfleyz.github.io/CZSKtiers/",
@@ -24,7 +24,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.0",
-		"minecraft": "~1.21.6",
+		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*"
 	}
