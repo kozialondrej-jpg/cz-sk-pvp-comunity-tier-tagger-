@@ -25,7 +25,7 @@ Minecraft Fabric mod pro zobrazování CZSK PvP tierů u hráčů na serveru.
 
 **1. Klonování repozitáře:**
 ```bash
-git clone https://github.com/kozialondrej-jpg/cz-sk-pvp-comunity-tier-tagger-.git
+git clone https://github.com/kransagen/cz-sk-pvp-comunity-tier-tagger-.git
 cd cz-sk-pvp-comunity-tier-tagger-
 ```
 
